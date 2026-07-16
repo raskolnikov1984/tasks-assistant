@@ -54,6 +54,7 @@ body {
   padding: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .project-card:hover {
@@ -74,6 +75,30 @@ body {
   font-size: 13px;
   margin-bottom: 16px;
   line-height: 1.5;
+}
+
+.project-card-stats {
+  display: flex;
+  gap: 12px;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.project-card-stats .stat {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.project-card-stats .stat.pending {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.project-card-stats .stat.completed {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
 }
 
 .project-card-header {

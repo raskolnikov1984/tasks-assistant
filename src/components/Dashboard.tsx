@@ -30,6 +30,7 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
 
   useEffect(() => {
     loadProjects();
+    loadAllTasks();
   }, []);
 
   async function loadProjects() {
@@ -116,6 +117,13 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
     await api.createTask(selectedProjectId, createTitle, createDescription, createPriority, creatingTaskDate, createDueTime || null);
     closeCreateModal();
     loadAllTasks();
+  }
+
+  function getTaskCounts(projectId: string) {
+    const projectTasks = allTasks.filter(t => t.project_id === projectId);
+    const pending = projectTasks.filter(t => t.status === 'pending' || t.status === 'in_progress').length;
+    const completed = projectTasks.filter(t => t.status === 'completed').length;
+    return { pending, completed };
   }
 
   const filteredProjects = projectFilter === 'all'
@@ -325,6 +333,10 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
               <span className={`project-status ${project.status}`}>{project.status}</span>
             </div>
             <p>{project.description}</p>
+            <div className="project-card-stats">
+              <span className="stat pending">{getTaskCounts(project.id).pending} pending</span>
+              <span className="stat completed">{getTaskCounts(project.id).completed} completed</span>
+            </div>
             <div className="project-card-actions">
               <button className="btn-toggle-status" onClick={() => handleToggleStatus(project.id, project.status)}>
                 {project.status === 'open' ? 'Close' : 'Reopen'}
