@@ -7,6 +7,7 @@ Desktop task management application built with Tauri v2 + React + TypeScript.
 - **Projects**: Create, edit, and delete projects with open/closed status filter
 - **Kanban Board**: Drag & drop tasks between Pending, In Progress, and Completed columns
 - **Calendar View**: Monthly grid showing tasks by due date, click any day to view or create tasks
+- **All Tasks View**: See all tasks across all projects with project identification
 - **Task Management**: Title, description, priority (low/medium/high), due date, optional time
 - **Edit Tasks**: Click any task card to edit inline via modal
 - **Dark Theme**: Glassmorphism UI with JetBrains Mono font
@@ -53,6 +54,7 @@ npm run tauri build
 tasksassistant/
 ├── src/                          # Frontend source
 │   ├── components/
+│   │   ├── AllTasksView.tsx      # All tasks across projects with filters
 │   │   ├── CalendarView.tsx      # Monthly calendar with task dots
 │   │   ├── ConfirmModal.tsx      # Reusable delete confirmation modal
 │   │   ├── Dashboard.tsx         # Projects list, global calendar, filters
@@ -72,6 +74,7 @@ tasksassistant/
 │   ├── Cargo.toml                # Rust dependencies
 │   └── tauri.conf.json           # Tauri configuration
 ├── package.json
+├── PLAN.md                       # Future features roadmap
 └── README.md
 ```
 
@@ -114,6 +117,19 @@ tasksassistant/
 | `update_task` | taskId, title, description, priority, dueDate, dueTime | Update a task |
 | `move_task` | taskId, newStatus | Move task to new status column |
 | `delete_task` | id | Delete a task |
+| `get_all_tasks_with_projects` | - | Get all tasks with project names |
+
+## Database Location
+
+The SQLite database is stored in a fixed location per platform:
+
+| OS | Path |
+|----|------|
+| **Linux** | `~/.local/share/com.aserrador.tasksassistant/tasks.db` |
+| **macOS** | `~/Library/Application Support/com.aserrador.tasksassistant/tasks.db` |
+| **Windows** | `%APPDATA%/com.aserrador.tasksassistant/tasks.db` |
+
+The database is automatically created on first run and migrations are applied automatically.
 
 ## Roadmap
 
