@@ -332,16 +332,20 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
               >{project.name}</h2>
               <span className={`project-status ${project.status}`}>{project.status}</span>
             </div>
-            <p>{project.description}</p>
             <div className="project-card-stats">
               <span className="stat pending">{getTaskCounts(project.id).pending} pending</span>
               <span className="stat completed">{getTaskCounts(project.id).completed} completed</span>
             </div>
-            <div className="project-card-actions">
-              <button className="btn-toggle-status" onClick={() => handleToggleStatus(project.id, project.status)}>
-                {project.status === 'open' ? 'Close' : 'Reopen'}
-              </button>
-              <button className="btn-delete" onClick={() => handleDelete(project.id)}>Delete</button>
+            <div className="project-card-description">
+              <p>{project.description}</p>
+            </div>
+            <div className="project-card-footer">
+              <div className="project-card-actions">
+                <button className="btn-toggle-status" onClick={() => handleToggleStatus(project.id, project.status)}>
+                  {project.status === 'open' ? 'Close' : 'Reopen'}
+                </button>
+                <button className="btn-delete" onClick={() => handleDelete(project.id)}>Delete</button>
+              </div>
             </div>
           </div>
         ))}
