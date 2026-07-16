@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services/api';
-import { Project, Task } from '../types';
+import { Project, Task, TaskWithProject } from '../types';
 import { CalendarView } from './CalendarView';
 import { ConfirmModal } from './ConfirmModal';
+import { AllTasksView } from './AllTasksView';
 
 interface DashboardProps {
   onSelectProject: (project: Project) => void;
@@ -15,7 +16,7 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
   const [description, setDescription] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
   const [allTasks, setAllTasks] = useState<Task[]>([]);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | TaskWithProject | null>(null);
   const [creatingTaskDate, setCreatingTaskDate] = useState<string | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState('');
   const [createTitle, setCreateTitle] = useState('');
@@ -24,6 +25,8 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
   const [createDueTime, setCreateDueTime] = useState('');
   const [projectFilter, setProjectFilter] = useState<'all' | 'open' | 'closed'>('open');
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
+  const [showAllTasks, setShowAllTasks] = useState(false);
+  const [allTasksWithProjects, setAllTasksWithProjects] = useState<TaskWithProject[]>([]);
 
   useEffect(() => {
     loadProjects();
@@ -42,6 +45,16 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
   function handleOpenCalendar() {
     loadAllTasks();
     setShowCalendar(true);
+  }
+
+  async function loadAllTasksWithProjects() {
+    const data = await api.getAllTasksWithProjects();
+    setAllTasksWithProjects(data);
+  }
+
+  function handleOpenAllTasks() {
+    loadAllTasksWithProjects();
+    setShowAllTasks(true);
   }
 
   async function handleCreate(e: React.FormEvent) {
@@ -216,6 +229,66 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
     );
   }
 
+  if (showAllTasks) {
+    return (
+      <>
+        <AllTasksView
+          tasks={allTasksWithProjects}
+          onEditTask={(task) => setEditingTask(task)}
+          onBack={() => setShowAllTasks(false)}
+          onRefresh={loadAllTasksWithProjects}
+        />
+
+        {editingTask && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>Edit Task</h2>
+              <input
+                type="text"
+                value={editingTask.title}
+                onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+              />
+              <textarea
+                value={editingTask.description}
+                onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+              />
+              <select
+                value={editingTask.priority}
+                onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as 'low' | 'medium' | 'high' })}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+              <div className="datetime-row">
+                <div className="datetime-field">
+                  <label>Due Date</label>
+                  <input
+                    type="date"
+                    value={editingTask.due_date}
+                    onChange={(e) => setEditingTask({ ...editingTask, due_date: e.target.value })}
+                  />
+                </div>
+                <div className="datetime-field">
+                  <label>Time (optional)</label>
+                  <input
+                    type="time"
+                    value={editingTask.due_time || ''}
+                    onChange={(e) => setEditingTask({ ...editingTask, due_time: e.target.value || null })}
+                  />
+                </div>
+              </div>
+              <div className="modal-actions">
+                <button type="button" onClick={() => setEditingTask(null)}>Cancel</button>
+                <button type="button" className="btn-primary" onClick={handleUpdateTask}>Save</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
@@ -235,6 +308,7 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
               onClick={() => setProjectFilter('closed')}
             >Closed</button>
           </div>
+          <button className="btn-back" onClick={handleOpenAllTasks}>📋 All Tasks</button>
           <button className="btn-back" onClick={handleOpenCalendar}>📅 Calendar</button>
           <button className="btn-primary" onClick={() => setShowModal(true)}>+ New Project</button>
         </div>

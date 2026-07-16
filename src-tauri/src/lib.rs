@@ -74,9 +74,29 @@ fn get_all_tasks(state: State<AppState>) -> Result<Vec<db::Task>, String> {
     db::get_all_tasks(&conn).map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn get_all_tasks_with_projects(state: State<AppState>) -> Result<Vec<db::TaskWithProject>, String> {
+    let conn = state.conn.lock().map_err(|e| e.to_string())?;
+    db::get_all_tasks_with_projects(&conn).map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let conn = Connection::open("tasks.db").expect("Failed to open database");
+    let app_dir = if cfg!(target_os = "linux") {
+        let home = std::env::var("HOME").expect("HOME not set");
+        std::path::PathBuf::from(home).join(".local/share").join("com.aserrador.tasksassistant")
+    } else if cfg!(target_os = "macos") {
+        let home = std::env::var("HOME").expect("HOME not set");
+        std::path::PathBuf::from(home).join("Library/Application Support").join("com.aserrador.tasksassistant")
+    } else if cfg!(target_os = "windows") {
+        let appdata = std::env::var("APPDATA").expect("APPDATA not set");
+        std::path::PathBuf::from(appdata).join("com.aserrador.tasksassistant")
+    } else {
+        std::path::PathBuf::from(".")
+    };
+    std::fs::create_dir_all(&app_dir).expect("Failed to create app data directory");
+    let db_path = app_dir.join("tasks.db");
+    let conn = Connection::open(&db_path).expect("Failed to open database");
     db::init_db(&conn).expect("Failed to initialize database");
 
     tauri::Builder::default()
@@ -93,7 +113,8 @@ pub fn run() {
             move_task,
             delete_task,
             update_task,
-            get_all_tasks
+            get_all_tasks,
+            get_all_tasks_with_projects
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

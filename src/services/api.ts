@@ -1,5 +1,5 @@
 import { invoke } from '@tauri-apps/api/core';
-import { Project, Task } from '../types';
+import { Project, Task, TaskWithProject } from '../types';
 
 export const api = {
   createProject: (name: string, description: string) =>
@@ -34,4 +34,7 @@ export const api = {
 
   getAllTasks: () =>
     invoke<Task[]>('get_all_tasks'),
+
+  getAllTasksWithProjects: () =>
+    invoke<TaskWithProject[]>('get_all_tasks_with_projects'),
 };

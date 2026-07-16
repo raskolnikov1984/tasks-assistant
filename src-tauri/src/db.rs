@@ -216,3 +216,43 @@ pub fn get_all_tasks(conn: &Connection) -> Result<Vec<Task>> {
         .collect::<Result<Vec<_>>>()?;
     Ok(tasks)
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TaskWithProject {
+    pub id: String,
+    pub project_id: String,
+    pub project_name: String,
+    pub title: String,
+    pub description: String,
+    pub priority: String,
+    pub status: String,
+    pub due_date: String,
+    pub due_time: Option<String>,
+    pub created_at: String,
+}
+
+pub fn get_all_tasks_with_projects(conn: &Connection) -> Result<Vec<TaskWithProject>> {
+    let mut stmt = conn.prepare(
+        "SELECT t.id, t.project_id, p.name, t.title, t.description, t.priority, t.status, t.due_date, t.due_time, t.created_at
+         FROM tasks t
+         JOIN projects p ON t.project_id = p.id
+         ORDER BY t.due_date ASC"
+    )?;
+    let tasks = stmt
+        .query_map([], |row| {
+            Ok(TaskWithProject {
+                id: row.get(0)?,
+                project_id: row.get(1)?,
+                project_name: row.get(2)?,
+                title: row.get(3)?,
+                description: row.get(4)?,
+                priority: row.get(5)?,
+                status: row.get(6)?,
+                due_date: row.get(7)?,
+                due_time: row.get(8)?,
+                created_at: row.get(9)?,
+            })
+        })?
+        .collect::<Result<Vec<_>>>()?;
+    Ok(tasks)
+}

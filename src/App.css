@@ -567,6 +567,95 @@ body {
   border-color: rgba(239, 68, 68, 0.5);
 }
 
+/* ===== ALL TASKS VIEW ===== */
+
+.all-tasks-filters {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.all-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.all-task-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.all-task-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.all-task-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.all-task-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.all-task-info h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.all-task-info p {
+  font-size: 11px;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.all-task-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.task-project-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.all-task-date {
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.all-task-time {
+  font-size: 11px;
+  color: #888;
+}
+
 /* ===== HEADER ACTIONS ===== */
 
 .header-actions {
