@@ -114,3 +114,12 @@ tasksassistant/
 | `update_task` | taskId, title, description, priority, dueDate, dueTime | Update a task |
 | `move_task` | taskId, newStatus | Move task to new status column |
 | `delete_task` | id | Delete a task |
+
+## Roadmap
+
+See [PLAN.md](PLAN.md) for detailed implementation plan of upcoming features:
+
+- **Phase 1**: Today view, Search, Dashboard stats
+- **Phase 2**: Notifications, System Tray
+- **Phase 3**: Keyboard shortcuts, Quick-add tasks
+- **Phase 4**: Edit project name/description
