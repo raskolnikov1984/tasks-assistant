@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { api } from '../services/api';
-import { Project, Task, TaskWithProject } from '../types';
-import { CalendarView } from './CalendarView';
-import { ConfirmModal } from './ConfirmModal';
-import { AllTasksView } from './AllTasksView';
+import { useState, useEffect } from "react";
+import { api } from "../services/api";
+import { Project, Task, TaskWithProject } from "../types";
+import { CalendarView } from "./CalendarView";
+import { ConfirmModal } from "./ConfirmModal";
+import { AllTasksView } from "./AllTasksView";
 
 interface DashboardProps {
   onSelectProject: (project: Project) => void;
@@ -12,21 +12,29 @@ interface DashboardProps {
 export function Dashboard({ onSelectProject }: DashboardProps) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
   const [allTasks, setAllTasks] = useState<Task[]>([]);
-  const [editingTask, setEditingTask] = useState<Task | TaskWithProject | null>(null);
+  const [editingTask, setEditingTask] = useState<Task | TaskWithProject | null>(
+    null,
+  );
   const [creatingTaskDate, setCreatingTaskDate] = useState<string | null>(null);
-  const [selectedProjectId, setSelectedProjectId] = useState('');
-  const [createTitle, setCreateTitle] = useState('');
-  const [createDescription, setCreateDescription] = useState('');
-  const [createPriority, setCreatePriority] = useState<'low' | 'medium' | 'high'>('medium');
-  const [createDueTime, setCreateDueTime] = useState('');
-  const [projectFilter, setProjectFilter] = useState<'all' | 'open' | 'closed'>('open');
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [createTitle, setCreateTitle] = useState("");
+  const [createDescription, setCreateDescription] = useState("");
+  const [createPriority, setCreatePriority] = useState<
+    "low" | "medium" | "high"
+  >("medium");
+  const [createDueTime, setCreateDueTime] = useState("");
+  const [projectFilter, setProjectFilter] = useState<"all" | "open" | "closed">(
+    "open",
+  );
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
   const [showAllTasks, setShowAllTasks] = useState(false);
-  const [allTasksWithProjects, setAllTasksWithProjects] = useState<TaskWithProject[]>([]);
+  const [allTasksWithProjects, setAllTasksWithProjects] = useState<
+    TaskWithProject[]
+  >([]);
 
   useEffect(() => {
     loadProjects();
@@ -62,8 +70,8 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
     e.preventDefault();
     if (!name.trim()) return;
     await api.createProject(name, description);
-    setName('');
-    setDescription('');
+    setName("");
+    setDescription("");
     setShowModal(false);
     loadProjects();
   }
@@ -80,67 +88,99 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
   }
 
   async function handleToggleStatus(id: string, currentStatus: string) {
-    const newStatus = currentStatus === 'open' ? 'closed' : 'open';
+    const newStatus = currentStatus === "open" ? "closed" : "open";
     await api.updateProjectStatus(id, newStatus);
     loadProjects();
   }
 
   async function handleUpdateTask() {
     if (!editingTask) return;
-    await api.updateTask(editingTask.id, editingTask.title, editingTask.description, editingTask.priority, editingTask.due_date, editingTask.due_time);
+    await api.updateTask(
+      editingTask.id,
+      editingTask.title,
+      editingTask.description,
+      editingTask.priority,
+      editingTask.due_date,
+      editingTask.due_time,
+    );
     setEditingTask(null);
     loadAllTasks();
   }
 
   function handleCreateFromCalendar(date: string) {
     setCreatingTaskDate(date);
-    const openProjects = projects.filter((p) => p.status === 'open');
-    setSelectedProjectId(openProjects.length > 0 ? openProjects[0].id : '');
-    setCreateTitle('');
-    setCreateDescription('');
-    setCreatePriority('medium');
-    setCreateDueTime('');
+    const openProjects = projects.filter((p) => p.status === "open");
+    setSelectedProjectId(openProjects.length > 0 ? openProjects[0].id : "");
+    setCreateTitle("");
+    setCreateDescription("");
+    setCreatePriority("medium");
+    setCreateDueTime("");
   }
 
   function closeCreateModal() {
     setCreatingTaskDate(null);
-    setSelectedProjectId('');
-    setCreateTitle('');
-    setCreateDescription('');
-    setCreatePriority('medium');
-    setCreateDueTime('');
+    setSelectedProjectId("");
+    setCreateTitle("");
+    setCreateDescription("");
+    setCreatePriority("medium");
+    setCreateDueTime("");
   }
 
   async function handleCreateTaskSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!createTitle.trim() || !creatingTaskDate || !selectedProjectId) return;
-    await api.createTask(selectedProjectId, createTitle, createDescription, createPriority, creatingTaskDate, createDueTime || null);
+    await api.createTask(
+      selectedProjectId,
+      createTitle,
+      createDescription,
+      createPriority,
+      creatingTaskDate,
+      createDueTime || null,
+    );
     closeCreateModal();
     loadAllTasks();
   }
 
   function getTaskCounts(projectId: string) {
-    const projectTasks = allTasks.filter(t => t.project_id === projectId);
-    const pending = projectTasks.filter(t => t.status === 'pending' || t.status === 'in_progress').length;
-    const completed = projectTasks.filter(t => t.status === 'completed').length;
+    const projectTasks = allTasks.filter((t) => t.project_id === projectId);
+    const pending = projectTasks.filter(
+      (t) => t.status === "pending" || t.status === "in_progress",
+    ).length;
+    const completed = projectTasks.filter(
+      (t) => t.status === "completed",
+    ).length;
     return { pending, completed };
   }
 
-  const filteredProjects = projectFilter === 'all'
-    ? projects
-    : projects.filter((p) => p.status === projectFilter);
+  const filteredProjects =
+    projectFilter === "all"
+      ? projects
+      : projects.filter((p) => p.status === projectFilter);
 
-  const openProjectsForCalendar = projects.filter((p) => p.status === 'open');
+  const openProjectsForCalendar = projects.filter((p) => p.status === "open");
 
   if (showCalendar) {
     return (
       <div className="dashboard">
         <div className="dashboard-header">
-          <button className="btn-back" onClick={() => setShowCalendar(false)}>← Projects</button>
+          <button className="btn-back" onClick={() => setShowCalendar(false)}>
+            ← Projects
+          </button>
           <h1>Calendar</h1>
-          <button className="btn-primary" onClick={() => { loadAllTasks(); }}>↻ Refresh</button>
+          <button
+            className="btn-primary"
+            onClick={() => {
+              loadAllTasks();
+            }}
+          >
+            ↻ Refresh
+          </button>
         </div>
-        <CalendarView tasks={allTasks} onEditTask={setEditingTask} onCreateTask={handleCreateFromCalendar} />
+        <CalendarView
+          tasks={allTasks}
+          onEditTask={setEditingTask}
+          onCreateTask={handleCreateFromCalendar}
+        />
 
         {editingTask && (
           <div className="modal-overlay">
@@ -149,15 +189,27 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
               <input
                 type="text"
                 value={editingTask.title}
-                onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+                onChange={(e) =>
+                  setEditingTask({ ...editingTask, title: e.target.value })
+                }
               />
               <textarea
                 value={editingTask.description}
-                onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+                onChange={(e) =>
+                  setEditingTask({
+                    ...editingTask,
+                    description: e.target.value,
+                  })
+                }
               />
               <select
                 value={editingTask.priority}
-                onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as 'low' | 'medium' | 'high' })}
+                onChange={(e) =>
+                  setEditingTask({
+                    ...editingTask,
+                    priority: e.target.value as "low" | "medium" | "high",
+                  })
+                }
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -169,21 +221,39 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
                   <input
                     type="date"
                     value={editingTask.due_date}
-                    onChange={(e) => setEditingTask({ ...editingTask, due_date: e.target.value })}
+                    onChange={(e) =>
+                      setEditingTask({
+                        ...editingTask,
+                        due_date: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="datetime-field">
                   <label>Time (optional)</label>
                   <input
                     type="time"
-                    value={editingTask.due_time || ''}
-                    onChange={(e) => setEditingTask({ ...editingTask, due_time: e.target.value || null })}
+                    value={editingTask.due_time || ""}
+                    onChange={(e) =>
+                      setEditingTask({
+                        ...editingTask,
+                        due_time: e.target.value || null,
+                      })
+                    }
                   />
                 </div>
               </div>
               <div className="modal-actions">
-                <button type="button" onClick={() => setEditingTask(null)}>Cancel</button>
-                <button type="button" className="btn-primary" onClick={handleUpdateTask}>Save</button>
+                <button type="button" onClick={() => setEditingTask(null)}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={handleUpdateTask}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
@@ -194,9 +264,14 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
             <div className="modal">
               <h2>Create Task</h2>
               <form onSubmit={handleCreateTaskSubmit}>
-                <select value={selectedProjectId} onChange={(e) => setSelectedProjectId(e.target.value)}>
+                <select
+                  value={selectedProjectId}
+                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                >
                   {openProjectsForCalendar.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
                   ))}
                 </select>
                 <input
@@ -210,7 +285,14 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
                   value={createDescription}
                   onChange={(e) => setCreateDescription(e.target.value)}
                 />
-                <select value={createPriority} onChange={(e) => setCreatePriority(e.target.value as 'low' | 'medium' | 'high')}>
+                <select
+                  value={createPriority}
+                  onChange={(e) =>
+                    setCreatePriority(
+                      e.target.value as "low" | "medium" | "high",
+                    )
+                  }
+                >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
@@ -222,12 +304,20 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
                   </div>
                   <div className="datetime-field">
                     <label>Time (optional)</label>
-                    <input type="time" value={createDueTime} onChange={(e) => setCreateDueTime(e.target.value)} />
+                    <input
+                      type="time"
+                      value={createDueTime}
+                      onChange={(e) => setCreateDueTime(e.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="modal-actions">
-                  <button type="button" onClick={closeCreateModal}>Cancel</button>
-                  <button type="submit" className="btn-primary">Create</button>
+                  <button type="button" onClick={closeCreateModal}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-primary">
+                    Create
+                  </button>
                 </div>
               </form>
             </div>
@@ -254,15 +344,27 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
               <input
                 type="text"
                 value={editingTask.title}
-                onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+                onChange={(e) =>
+                  setEditingTask({ ...editingTask, title: e.target.value })
+                }
               />
               <textarea
                 value={editingTask.description}
-                onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+                onChange={(e) =>
+                  setEditingTask({
+                    ...editingTask,
+                    description: e.target.value,
+                  })
+                }
               />
               <select
                 value={editingTask.priority}
-                onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as 'low' | 'medium' | 'high' })}
+                onChange={(e) =>
+                  setEditingTask({
+                    ...editingTask,
+                    priority: e.target.value as "low" | "medium" | "high",
+                  })
+                }
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -274,21 +376,39 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
                   <input
                     type="date"
                     value={editingTask.due_date}
-                    onChange={(e) => setEditingTask({ ...editingTask, due_date: e.target.value })}
+                    onChange={(e) =>
+                      setEditingTask({
+                        ...editingTask,
+                        due_date: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="datetime-field">
                   <label>Time (optional)</label>
                   <input
                     type="time"
-                    value={editingTask.due_time || ''}
-                    onChange={(e) => setEditingTask({ ...editingTask, due_time: e.target.value || null })}
+                    value={editingTask.due_time || ""}
+                    onChange={(e) =>
+                      setEditingTask({
+                        ...editingTask,
+                        due_time: e.target.value || null,
+                      })
+                    }
                   />
                 </div>
               </div>
               <div className="modal-actions">
-                <button type="button" onClick={() => setEditingTask(null)}>Cancel</button>
-                <button type="button" className="btn-primary" onClick={handleUpdateTask}>Save</button>
+                <button type="button" onClick={() => setEditingTask(null)}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={handleUpdateTask}
+                >
+                  Save
+                </button>
               </div>
             </div>
           </div>
@@ -304,47 +424,80 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
         <div className="header-actions">
           <div className="view-toggle">
             <button
-              className={`toggle-btn${projectFilter === 'all' ? ' active' : ''}`}
-              onClick={() => setProjectFilter('all')}
-            >All</button>
+              className={`toggle-btn${projectFilter === "all" ? " active" : ""}`}
+              onClick={() => setProjectFilter("all")}
+            >
+              All
+            </button>
             <button
-              className={`toggle-btn${projectFilter === 'open' ? ' active' : ''}`}
-              onClick={() => setProjectFilter('open')}
-            >Open</button>
+              className={`toggle-btn${projectFilter === "open" ? " active" : ""}`}
+              onClick={() => setProjectFilter("open")}
+            >
+              Open
+            </button>
             <button
-              className={`toggle-btn${projectFilter === 'closed' ? ' active' : ''}`}
-              onClick={() => setProjectFilter('closed')}
-            >Closed</button>
+              className={`toggle-btn${projectFilter === "closed" ? " active" : ""}`}
+              onClick={() => setProjectFilter("closed")}
+            >
+              Closed
+            </button>
           </div>
-          <button className="btn-back" onClick={handleOpenAllTasks}>📋 All Tasks</button>
-          <button className="btn-back" onClick={handleOpenCalendar}>📅 Calendar</button>
-          <button className="btn-primary" onClick={() => setShowModal(true)}>+ New Project</button>
+          <button className="btn-back" onClick={handleOpenAllTasks}>
+            📋 All Tasks
+          </button>
+          <button className="btn-back" onClick={handleOpenCalendar}>
+            📅 Calendar
+          </button>
+          <button className="btn-primary" onClick={() => setShowModal(true)}>
+            + New Project
+          </button>
         </div>
       </div>
 
       <div className="projects-grid">
         {filteredProjects.map((project) => (
-          <div key={project.id} className={`project-card${project.status === 'closed' ? ' closed' : ''}`}>
+          <div
+            key={project.id}
+            className={`project-card${project.status === "closed" ? " closed" : ""}`}
+          >
             <div className="project-card-header">
               <h2
-                className={project.status === 'closed' ? 'no-click' : ''}
-                onClick={() => project.status === 'open' && onSelectProject(project)}
-              >{project.name}</h2>
-              <span className={`project-status ${project.status}`}>{project.status}</span>
+                className={project.status === "closed" ? "no-click" : ""}
+                onClick={() =>
+                  project.status === "open" && onSelectProject(project)
+                }
+              >
+                {project.name}
+              </h2>
+              <span className={`project-status ${project.status}`}>
+                {project.status}
+              </span>
             </div>
             <div className="project-card-stats">
-              <span className="stat pending">{getTaskCounts(project.id).pending} pending</span>
-              <span className="stat completed">{getTaskCounts(project.id).completed} completed</span>
+              <span className="stat pending">
+                {getTaskCounts(project.id).pending} pending
+              </span>
+              <span className="stat completed">
+                {getTaskCounts(project.id).completed} completed
+              </span>
             </div>
             <div className="project-card-description">
               <p>{project.description}</p>
             </div>
             <div className="project-card-footer">
               <div className="project-card-actions">
-                <button className="btn-toggle-status" onClick={() => handleToggleStatus(project.id, project.status)}>
-                  {project.status === 'open' ? 'Close' : 'Reopen'}
+                <button
+                  className="btn-toggle-status"
+                  onClick={() => handleToggleStatus(project.id, project.status)}
+                >
+                  {project.status === "open" ? "Close" : "Reopen"}
                 </button>
-                <button className="btn-delete" onClick={() => handleDelete(project.id)}>Delete</button>
+                <button
+                  className="btn-delete"
+                  onClick={() => handleDelete(project.id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           </div>
@@ -376,8 +529,12 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
                 onChange={(e) => setDescription(e.target.value)}
               />
               <div className="modal-actions">
-                <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
-                <button type="submit" className="btn-primary">Create</button>
+                <button type="button" onClick={() => setShowModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn-primary">
+                  Create
+                </button>
               </div>
             </form>
           </div>
