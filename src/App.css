@@ -228,9 +228,44 @@ body {
 .project-header h1 {
   font-size: 24px;
   font-weight: 600;
-  flex: 1;
   color: #ffffff;
   letter-spacing: -0.5px;
+}
+
+.project-info {
+  flex: 1;
+}
+
+.project-info p {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
+}
+
+.project-description {
+  max-height: 40px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  margin-top: 4px;
+}
+
+.project-description.expanded {
+  max-height: 500px;
+}
+
+.btn-toggle-desc {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 4px;
+  font-family: inherit;
+}
+
+.btn-toggle-desc:hover {
+  color: #93c5fd;
 }
 
 .btn-back {

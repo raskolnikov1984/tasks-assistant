@@ -33,6 +33,7 @@ export function ProjectView({ project, onBack }: ProjectViewProps) {
   const [dueDate, setDueDate] = useState(getTodayISO());
   const [dueTime, setDueTime] = useState('');
   const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
+  const [descExpanded, setDescExpanded] = useState(false);
 
 
   useEffect(() => {
@@ -130,7 +131,17 @@ export function ProjectView({ project, onBack }: ProjectViewProps) {
     <div className="project-view">
       <div className="project-header">
         <button className="btn-back" onClick={onBack}>← Back</button>
-        <h1>{project.name}</h1>
+        <div className="project-info">
+          <h1>{project.name}</h1>
+          <div className={`project-description${descExpanded ? ' expanded' : ''}`}>
+            <p>{project.description}</p>
+          </div>
+          {project.description && project.description.length > 80 && (
+            <button className="btn-toggle-desc" onClick={() => setDescExpanded(!descExpanded)}>
+              {descExpanded ? 'Ver menos' : 'Ver más'}
+            </button>
+          )}
+        </div>
         <div className="view-toggle">
           <button
             className={`toggle-btn${viewMode === 'board' ? ' active' : ''}`}
