@@ -46,10 +46,10 @@ export function AllTasksView({
 }: AllTasksViewProps) {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "pending" | "in_progress" | "completed"
-  >("all");
+  >("pending");
 
   const filteredTasks =
-    statusFilter === "pending"
+    statusFilter === "all"
       ? tasks
       : tasks.filter((t) => t.status === statusFilter);
 
