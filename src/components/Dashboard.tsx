@@ -33,6 +33,9 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
   );
   const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
   const [showAllTasks, setShowAllTasks] = useState(false);
+  const [projectViewMode, setProjectViewMode] = useState<"card" | "list">(
+    "card",
+  );
   const [allTasksWithProjects, setAllTasksWithProjects] = useState<
     TaskWithProject[]
   >([]);
@@ -452,18 +455,91 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
           <button className="btn-primary" onClick={() => setShowModal(true)}>
             + New Project
           </button>
+          <div className="view-toggle">
+            <button
+              className={`toggle-btn${projectViewMode === "card" ? " active" : ""}`}
+              onClick={() => setProjectViewMode("card")}
+            >
+              ⊞
+            </button>
+            <button
+              className={`toggle-btn${projectViewMode === "list" ? " active" : ""}`}
+              onClick={() => setProjectViewMode("list")}
+            >
+              ☰
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="projects-grid">
-        {filteredProjects.map((project) => (
-          <div
-            key={project.id}
-            className={`project-card${project.status === "closed" ? " closed" : ""}`}
-          >
-            <div className="project-card-header">
+      {projectViewMode === "card" ? (
+        <div className="projects-grid">
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className={`project-card${project.status === "closed" ? " closed" : ""}`}
+            >
+              <div className="project-card-header">
+                <h2
+                  className={project.status === "closed" ? "no-click" : ""}
+                  onClick={() =>
+                    project.status === "open" && onSelectProject(project)
+                  }
+                >
+                  {project.name}
+                </h2>
+                <span className={`project-status ${project.status}`}>
+                  {project.status}
+                </span>
+              </div>
+              <div className="project-card-stats">
+                <span className="stat pending">
+                  {getTaskCounts(project.id).pending} pending
+                </span>
+                <span className="stat completed">
+                  {getTaskCounts(project.id).completed} completed
+                </span>
+              </div>
+              <div className="project-card-description">
+                <p>{project.description}</p>
+              </div>
+              <div className="project-card-footer">
+                <div className="project-card-actions">
+                  <button
+                    className="btn-toggle-status"
+                    onClick={() =>
+                      handleToggleStatus(project.id, project.status)
+                    }
+                  >
+                    {project.status === "open" ? "Close" : "Reopen"}
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleDelete(project.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="projects-list">
+          <div className="projects-list-header">
+            <span>Name</span>
+            <span>Status</span>
+            <span>Description</span>
+            <span>Tasks</span>
+            <span>Actions</span>
+          </div>
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className={`project-list-item${project.status === "closed" ? " closed" : ""}`}
+            >
               <h2
-                className={project.status === "closed" ? "no-click" : ""}
+                className={`project-list-name${project.status === "closed" ? " no-click" : ""}`}
                 onClick={() =>
                   project.status === "open" && onSelectProject(project)
                 }
@@ -473,23 +549,21 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
               <span className={`project-status ${project.status}`}>
                 {project.status}
               </span>
-            </div>
-            <div className="project-card-stats">
-              <span className="stat pending">
-                {getTaskCounts(project.id).pending} pending
-              </span>
-              <span className="stat completed">
-                {getTaskCounts(project.id).completed} completed
-              </span>
-            </div>
-            <div className="project-card-description">
-              <p>{project.description}</p>
-            </div>
-            <div className="project-card-footer">
+              <p className="project-list-description">{project.description}</p>
+              <div className="project-list-stats">
+                <span className="stat pending">
+                  {getTaskCounts(project.id).pending} pending
+                </span>
+                <span className="stat completed">
+                  {getTaskCounts(project.id).completed} completed
+                </span>
+              </div>
               <div className="project-card-actions">
                 <button
                   className="btn-toggle-status"
-                  onClick={() => handleToggleStatus(project.id, project.status)}
+                  onClick={() =>
+                    handleToggleStatus(project.id, project.status)
+                  }
                 >
                   {project.status === "open" ? "Close" : "Reopen"}
                 </button>
@@ -501,9 +575,9 @@ export function Dashboard({ onSelectProject }: DashboardProps) {
                 </button>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {deleteProjectId && (
         <ConfirmModal
