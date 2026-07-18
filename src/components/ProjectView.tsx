@@ -5,7 +5,7 @@ import { Project, Task, TaskStatus } from "../types";
 import { TaskCard } from "./TaskCard";
 import { CalendarView } from "./CalendarView";
 import { ConfirmModal } from "./ConfirmModal";
-import { TasksTimer } from "./TasksTimer";
+import { TimeTracker } from "./TimeTracker";
 
 interface ProjectViewProps {
   project: Project;
@@ -187,7 +187,7 @@ export function ProjectView({ project, onBack }: ProjectViewProps) {
         )}
       </div>
 
-      <TasksTimer />
+      <TimeTracker />
 
       {viewMode === "board" ? (
         <DragDropContext onDragEnd={handleDragEnd}>

@@ -1,5 +1,5 @@
 import { useTimeTracker } from "../../hooks/useTimeTracker.ts";
-import "./TasksTimer.css";
+import "./TimeTracker.css";
 
 export const TimeTracker = () => {
   const { time, isRunning, toggleTimer, handleReset } = useTimeTracker();
