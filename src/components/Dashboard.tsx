@@ -3,7 +3,8 @@ import { api } from "../services/api";
 import { Project, Task, TaskWithProject } from "../types";
 import { CalendarView } from "./CalendarView";
 import { ConfirmModal } from "./ConfirmModal";
-import { AllTasksView } from "./AllTasksView";
+import { AllTasksView } from "../pages/AllTasks/AllTasksView";
+
 
 interface DashboardProps {
   onSelectProject: (project: Project) => void;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TaskWithProject } from "../types";
+import { TaskWithProject } from "../../types";
 
 interface AllTasksViewProps {
   tasks: TaskWithProject[];

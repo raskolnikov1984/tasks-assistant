@@ -1,0 +1,115 @@
+.tasks-timer {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.tasks-timer-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.tasks-timer-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tasks-timer-time {
+  font-size: 28px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #666;
+  transition: color 0.3s ease;
+  letter-spacing: 1px;
+}
+
+.tasks-timer-time.running {
+  color: #ffffff;
+}
+
+.tasks-timer-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #555;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.tasks-timer-indicator.running {
+  background: #4ade80;
+  animation: timer-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes timer-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 0 4px rgba(74, 222, 128, 0);
+  }
+}
+
+.timer-controls {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.timer-controls button {
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.timer-btn-start {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.timer-btn-start:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.timer-btn-pause {
+  background: rgba(234, 179, 8, 0.12);
+  color: #facc15;
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.timer-btn-pause:hover {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: rgba(234, 179, 8, 0.5);
+}
+
+.timer-btn-reset {
+  background: rgba(255, 255, 255, 0.06);
+  color: #888;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.timer-btn-reset:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ccc;
+}
