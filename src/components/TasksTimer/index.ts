@@ -1,1 +1,1 @@
-export { TasksTimer } from "./TasksTimer";
+export { TimeTracker } from "./TimeTracker";
